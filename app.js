@@ -60,6 +60,9 @@ barba.hooks.after((data) => {
     
 });
 
+// Tell ScrollTrigger to remember these styles before transitions
+ScrollTrigger.saveStyles(".fab_wrap");
+
 barba.init({
     views: [
         {
@@ -74,12 +77,15 @@ barba.init({
 
                 initModalBasic();
                 FooterCode();
-               
                 RebootWebflowFunctions();
+                // RebootWebflowFunctions();
 
             },
             afterEnter(data) {
                 homeInit();
+                ScrollTrigger.refresh();
+                 
+
                 // Code to run right after entering this view
             },
             beforeLeave(data) {
@@ -98,7 +104,7 @@ barba.init({
                 RebootWebflowFunctions();
 
             },
-            afteEnter()
+            afterEnter()
             {
                 
             }
@@ -128,7 +134,7 @@ barba.init({
                 RebootWebflowFunctions();
 
             },
-            afteEnter()
+            afterEnter()
             {
                 
             }
@@ -158,7 +164,7 @@ barba.init({
                 RebootWebflowFunctions();
 
             },
-            afteEnter()
+            afterEnter()
             {
                 InvestmentInit();
             }
@@ -175,7 +181,7 @@ barba.init({
                 RebootWebflowFunctions();
 
             },
-            afteEnter()
+            afterEnter()
             {
                 PeopletInit();
             }
@@ -391,7 +397,7 @@ function homeInit() {
                 }
             });
     });
-
+    ScrollTrigger.refresh();
 
 
 
