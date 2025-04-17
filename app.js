@@ -56,6 +56,7 @@ barba.hooks.after((data) => {
     // 🔹 Trigger Hero Animation on New Page
     // animateHero();
     RunCohorttablesCode();
+    RunCountup();
     
 });
 
@@ -443,9 +444,138 @@ function homeInit() {
         tl.from(typeSplit.words, { "--text_1_line-width": "0%", stagger: 0.5, ease: "none" });
     });
 
+    
+//Swiper code
+// document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".slider_2_wrap").forEach((wrap) => {
+    if (wrap.dataset.scriptInitialized) return;
+    wrap.dataset.scriptInitialized = "true";
+    const cmsWrap = wrap.querySelector(".slider_2_cms_wrap");
+    const bulletWrap = wrap.querySelector(".slider_2_bullet_wrap");
+    const bullets = bulletWrap ? bulletWrap.querySelectorAll(".slider_2_bullet_item") : [];
+    if (!cmsWrap || !bulletWrap || bullets.length === 0) {
+      console.warn("Missing required elements for Swiper in:", wrap);
+      return;
+    }
 
+    const swiper = new Swiper(cmsWrap, {
+      slidesPerView: "auto",
+      followFinger: true,
+      freeMode: false,
+      slideToClickedSlide: false,
+      centeredSlides: false,
+      autoHeight: false,
+      speed: 600,
+      initialSlide: 0,
+      mousewheel: { forceToAxis: true },
+      keyboard: { enabled: true, onlyInViewport: true },
+      navigation: {
+        nextEl: wrap.querySelector(".slider_2_btn_element.is-next"),
+        prevEl: wrap.querySelector(".slider_2_btn_element.is-prev"),
+      },
+      scrollbar: {
+        el: wrap.querySelector(".slider_2_draggable_wrap"),
+        draggable: true,
+        dragClass: "slider_2_draggable_handle",
+        snapOnRelease: true,
+      },
+      slideActiveClass: "is-active",
+      slideDuplicateActiveClass: "is-active",
+      on: {
+  init: function () {
+    animateSlide(this.slides[this.activeIndex]);
+  },
+  slideChangeTransitionEnd: function () {
+    animateSlide(this.slides[this.activeIndex]);
+  },
+}
+    });
 
+    const setInitialActive = () => {
+      bullets.forEach(bullet => bullet.classList.remove("is-active"));
+      if (bullets.length > 0) bullets[0].classList.add("is-active");
+      swiper.slideTo(0, 0);
+    };
 
+    setInitialActive();
+
+    bullets.forEach((bullet, index) => {
+      bullet.dataset.slideIndex = index;
+      bullet.addEventListener("click", function () {
+        const slideIndex = parseInt(this.dataset.slideIndex, 10);
+        swiper.slideTo(slideIndex);
+        bullets.forEach((b) => b.classList.remove("is-active"));
+        this.classList.add("is-active");
+      });
+    });
+
+    swiper.on("slideChange", () => {
+      const activeIndex = swiper.realIndex;
+      bullets.forEach((bullet, i) => {
+        bullet.classList.toggle("is-active", i === activeIndex);
+      });
+    });
+
+    // 🔥 GSAP animation function per slide
+function animateSlide(slideEl) {
+  const tl = gsap.timeline();
+
+  // Animate split text by character (titles)
+  $(slideEl)
+    .find("[data-split]")
+    .each(function () {
+      let text = new SplitType(this, { types: "chars" });
+      tl.from(
+        text.chars,
+        {
+          yPercent: 100,
+          stagger: 0.05,
+          duration: 0.6,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+        "-=0.5"
+      );
+    });
+
+  // Animate split lines (paragraphs or multiline text)
+  $(slideEl)
+    .find("[data-split-lines]")
+    .each(function () {
+      let text = new SplitType(this, { types: "lines" });
+
+      // Wrap each line to allow clipping
+      $(text.lines).wrap("<div class='line-wrapper'></div>");
+
+      tl.from(
+        text.lines,
+        {
+          yPercent: 100,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+        "-=1"
+      );
+    });
+
+  // Animate background scale-in
+  $(slideEl)
+    .find("[data-scale-bg]")
+    .each(function () {
+      tl.fromTo(
+        this,
+        { scale: 1.7 },
+        { scale: 1, duration: 2, ease: "power2.out" },
+        "<"
+      );
+    });
+}
+  });
+// });
+
+// RunCountup();
 
 };
 
@@ -1202,6 +1332,7 @@ function InvestmentInit() {
     //   $("[data-gsap-hide]").css("visibility", "visible");
     // });
 
+    // RunCountup();
 }
 
 function PeopletInit() {
@@ -1861,4 +1992,16 @@ function RunCohorttablesCode()
 		});
 	});
 // });
+}
+
+
+function RunCountup()
+{
+    const existingScript = document.querySelector('script[src*="https://cdn.jsdelivr.net/npm/@flowbase-co/boosters-countup@1.0.0/dist/countup.min.js"]');
+    if (existingScript) {
+      const newScript = document.createElement('script');
+      newScript.src = existingScript.src;
+      newScript.async = true;
+      document.body.appendChild(newScript);
+    }    
 }
