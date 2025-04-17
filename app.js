@@ -1,42 +1,48 @@
 
 
 
+// Old Code //
+
+// function resetWebflow(data) {
+//     let dom = $(new DOMParser().parseFromString(data.next.html, "text/html")).find("html");
+
+//     // Reset Webflow interactions
+//     $("html").attr("data-wf-page", dom.attr("data-wf-page"));
+//     window.Webflow && window.Webflow.destroy();
+//     window.Webflow && window.Webflow.ready();
+//     window.Webflow && window.Webflow.require("ix2").init();
+
+//     // Reset w--current class
+//     $(".w--current").removeClass("w--current");
+//     $("a").each(function () {
+//         if ($(this).attr("href") === window.location.pathname) {
+//             $(this).addClass("w--current");
+//         }
+//     });
+
+//     // Reset scripts
+//     dom.find("[data-barba-script]").each(function () {
+//         let codeString = $(this).text();
+//         if (codeString.includes("DOMContentLoaded")) {
+//             console.log('THIS IS CODE STRING BEFORE REPLACING IT', codeString);
+//             let newCodeString = codeString.replace(/window\.addEventListener\("DOMContentLoaded",\s*\(\s*event\s*\)\s*=>\s*{\s*/, "");
+//             codeString = newCodeString.replace(/\s*}\s*\);\s*$/, "");
+//             console.log('THIS IS CODE STRING AFTER replacements', codeString);
+//         }
+//         let script = document.createElement("script");
+//         script.type = "text/javascript";
+//         if ($(this).attr("src")) script.src = $(this).attr("src");
+//         console.log('THIS IS CODE STRING', codeString)
+//         script.text = codeString;
+//         document.body.appendChild(script).remove();
+//     });
+// }
+
+
+
+//******************************************* */
 // Barba JS //
-
-function resetWebflow(data) {
-    let dom = $(new DOMParser().parseFromString(data.next.html, "text/html")).find("html");
-
-    // Reset Webflow interactions
-    $("html").attr("data-wf-page", dom.attr("data-wf-page"));
-    window.Webflow && window.Webflow.destroy();
-    window.Webflow && window.Webflow.ready();
-    window.Webflow && window.Webflow.require("ix2").init();
-
-    // Reset w--current class
-    $(".w--current").removeClass("w--current");
-    $("a").each(function () {
-        if ($(this).attr("href") === window.location.pathname) {
-            $(this).addClass("w--current");
-        }
-    });
-
-    // Reset scripts
-    dom.find("[data-barba-script]").each(function () {
-        let codeString = $(this).text();
-        if (codeString.includes("DOMContentLoaded")) {
-            console.log('THIS IS CODE STRING BEFORE REPLACING IT', codeString);
-            let newCodeString = codeString.replace(/window\.addEventListener\("DOMContentLoaded",\s*\(\s*event\s*\)\s*=>\s*{\s*/, "");
-            codeString = newCodeString.replace(/\s*}\s*\);\s*$/, "");
-            console.log('THIS IS CODE STRING AFTER replacements', codeString);
-        }
-        let script = document.createElement("script");
-        script.type = "text/javascript";
-        if ($(this).attr("src")) script.src = $(this).attr("src");
-        console.log('THIS IS CODE STRING', codeString)
-        script.text = codeString;
-        document.body.appendChild(script).remove();
-    });
-}
+//******************************************* */
 
 barba.hooks.enter((data) => {
     gsap.set(data.next.container, {
@@ -57,56 +63,34 @@ barba.hooks.after((data) => {
     // animateHero();
     RunCohorttablesCode();
     RunCountup();
-    
+
 });
 
-// Tell ScrollTrigger to remember these styles before transitions
-ScrollTrigger.saveStyles(".fab_wrap");
 
 barba.init({
     views: [
         {
             namespace: 'home',
             beforeEnter(data) {
-                // Code to run before entering this view (e.g., setup animations)
                 console.log('Entering home page');
-
                 RunFirst();
                 HomeLoader();
-               
-
                 initModalBasic();
                 FooterCode();
                 RebootWebflowFunctions();
-                // RebootWebflowFunctions();
-
             },
             afterEnter(data) {
                 homeInit();
-                ScrollTrigger.refresh();
-                 
-
-                // Code to run right after entering this view
-            },
-            beforeLeave(data) {
-                // Clean up before leaving the page (e.g., destroy listeners)
             }
         },
         {
             namespace: 'model',
             beforeEnter(data) {
                 console.log('Entering model page');
-                RunFirst();               
+                RunFirst();
                 ModelInit();
-                initModalBasic();
-                FooterCode();
-                animateStandardHero();
-                RebootWebflowFunctions();
+                RunLast()
 
-            },
-            afterEnter()
-            {
-                
             }
         },
         {
@@ -114,12 +98,7 @@ barba.init({
             beforeEnter(data) {
                 console.log('Entering approach page');
                 RunFirst();
-
-                initModalBasic();
-                FooterCode();
-                animateStandardHero();
-                RebootWebflowFunctions();
-
+                RunLast();
             }
         },
         {
@@ -128,15 +107,8 @@ barba.init({
                 console.log('Entering impact page');
                 RunFirst();
                 ImpactInit();
-                initModalBasic();
-                FooterCode();
-                animateStandardHero();
-                RebootWebflowFunctions();
+                RunLast()
 
-            },
-            afterEnter()
-            {
-                
             }
         },
         {
@@ -144,12 +116,7 @@ barba.init({
             beforeEnter(data) {
                 console.log('Entering blog page');
                 RunFirst();
-
-                initModalBasic();
-                FooterCode();
-                animateStandardHero();
-                RebootWebflowFunctions();
-
+                RunLast();
             }
         },
         {
@@ -157,15 +124,9 @@ barba.init({
             beforeEnter(data) {
                 console.log('Entering investment page');
                 RunFirst();
-
-                initModalBasic();
-                FooterCode();
-                animateStandardHero();
-                RebootWebflowFunctions();
-
+                RunLast();
             },
-            afterEnter()
-            {
+            afterEnter() {
                 InvestmentInit();
             }
         },
@@ -174,15 +135,10 @@ barba.init({
             beforeEnter(data) {
                 console.log('Entering people page');
                 RunFirst();
-
-                initModalBasic();
-                FooterCode();
-                animateStandardHero();
-                RebootWebflowFunctions();
+                RunLast();
 
             },
-            afterEnter()
-            {
+            afterEnter() {
                 PeopletInit();
             }
         },
@@ -191,16 +147,11 @@ barba.init({
             beforeEnter(data) {
                 console.log('Entering bloppost page');
                 RunFirst();
-
-                initModalBasic();
-                FooterCode();
-                animateStandardHero();
-                RebootWebflowFunctions();
-
+                RunLast();
             }
         }
     ],
-    // preventRunning: true,
+
     transitions: [
         {
             sync: true,
@@ -221,6 +172,13 @@ barba.init({
 
 
 
+//******************************************* */
+// Pages code //
+//******************************************* */
+
+
+//Home Page Code
+//******************************************* */
 let hasVisited = false;
 function HomeLoader() {
 
@@ -237,12 +195,9 @@ function HomeLoader() {
         // Returning visitor: Skip loader, play hero animation immediately
         heroTl.play();
     }
-
 }
 
 function homeInit() {
-
-    console.log("home code entered");
 
     //Map Location Modal
     if ($(".map-location").length) {
@@ -315,11 +270,6 @@ function homeInit() {
         }
     }
     // Scroll page overlap effect
-
-
-
-
-
 
     //Full Width Hero Text
     function setFullWidthFontSize() {
@@ -397,14 +347,11 @@ function homeInit() {
                 }
             });
     });
-    ScrollTrigger.refresh();
+    debouncedRefresh();
 
 
 
-    //*******************************************//
-    window.addEventListener("load", () => {
-        ScrollTrigger.refresh();
-    });
+    //******************
 
 
     document.querySelectorAll("[data-scroll-overlap='true']").forEach(section => {
@@ -430,9 +377,6 @@ function homeInit() {
 
     initButtonCharacterStagger();
 
-
-
-
     // Scrub Text 
 
     document.querySelectorAll(".text_1_wrap").forEach(function (element) {
@@ -450,142 +394,145 @@ function homeInit() {
         tl.from(typeSplit.words, { "--text_1_line-width": "0%", stagger: 0.5, ease: "none" });
     });
 
-    
-//Swiper code
-// document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".slider_2_wrap").forEach((wrap) => {
-    if (wrap.dataset.scriptInitialized) return;
-    wrap.dataset.scriptInitialized = "true";
-    const cmsWrap = wrap.querySelector(".slider_2_cms_wrap");
-    const bulletWrap = wrap.querySelector(".slider_2_bullet_wrap");
-    const bullets = bulletWrap ? bulletWrap.querySelectorAll(".slider_2_bullet_item") : [];
-    if (!cmsWrap || !bulletWrap || bullets.length === 0) {
-      console.warn("Missing required elements for Swiper in:", wrap);
-      return;
-    }
 
-    const swiper = new Swiper(cmsWrap, {
-      slidesPerView: "auto",
-      followFinger: true,
-      freeMode: false,
-      slideToClickedSlide: false,
-      centeredSlides: false,
-      autoHeight: false,
-      speed: 600,
-      initialSlide: 0,
-      mousewheel: { forceToAxis: true },
-      keyboard: { enabled: true, onlyInViewport: true },
-      navigation: {
-        nextEl: wrap.querySelector(".slider_2_btn_element.is-next"),
-        prevEl: wrap.querySelector(".slider_2_btn_element.is-prev"),
-      },
-      scrollbar: {
-        el: wrap.querySelector(".slider_2_draggable_wrap"),
-        draggable: true,
-        dragClass: "slider_2_draggable_handle",
-        snapOnRelease: true,
-      },
-      slideActiveClass: "is-active",
-      slideDuplicateActiveClass: "is-active",
-      on: {
-  init: function () {
-    animateSlide(this.slides[this.activeIndex]);
-  },
-  slideChangeTransitionEnd: function () {
-    animateSlide(this.slides[this.activeIndex]);
-  },
-}
+    //Swiper code
+    document.querySelectorAll(".slider_2_wrap").forEach((wrap) => {
+        if (wrap.dataset.scriptInitialized) return;
+        wrap.dataset.scriptInitialized = "true";
+        const cmsWrap = wrap.querySelector(".slider_2_cms_wrap");
+        const bulletWrap = wrap.querySelector(".slider_2_bullet_wrap");
+        const bullets = bulletWrap ? bulletWrap.querySelectorAll(".slider_2_bullet_item") : [];
+        if (!cmsWrap || !bulletWrap || bullets.length === 0) {
+            console.warn("Missing required elements for Swiper in:", wrap);
+            return;
+        }
+
+        const swiper = new Swiper(cmsWrap, {
+            slidesPerView: "auto",
+            followFinger: true,
+            freeMode: false,
+            slideToClickedSlide: false,
+            centeredSlides: false,
+            autoHeight: false,
+            speed: 600,
+            initialSlide: 0,
+            mousewheel: { forceToAxis: true },
+            keyboard: { enabled: true, onlyInViewport: true },
+            navigation: {
+                nextEl: wrap.querySelector(".slider_2_btn_element.is-next"),
+                prevEl: wrap.querySelector(".slider_2_btn_element.is-prev"),
+            },
+            scrollbar: {
+                el: wrap.querySelector(".slider_2_draggable_wrap"),
+                draggable: true,
+                dragClass: "slider_2_draggable_handle",
+                snapOnRelease: true,
+            },
+            slideActiveClass: "is-active",
+            slideDuplicateActiveClass: "is-active",
+            on: {
+                init: function () {
+                    animateSlide(this.slides[this.activeIndex]);
+                },
+                slideChangeTransitionEnd: function () {
+                    animateSlide(this.slides[this.activeIndex]);
+                },
+            }
+        });
+
+        const setInitialActive = () => {
+            bullets.forEach(bullet => bullet.classList.remove("is-active"));
+            if (bullets.length > 0) bullets[0].classList.add("is-active");
+            swiper.slideTo(0, 0);
+        };
+
+        setInitialActive();
+
+        bullets.forEach((bullet, index) => {
+            bullet.dataset.slideIndex = index;
+            bullet.addEventListener("click", function () {
+                const slideIndex = parseInt(this.dataset.slideIndex, 10);
+                swiper.slideTo(slideIndex);
+                bullets.forEach((b) => b.classList.remove("is-active"));
+                this.classList.add("is-active");
+            });
+        });
+
+        swiper.on("slideChange", () => {
+            const activeIndex = swiper.realIndex;
+            bullets.forEach((bullet, i) => {
+                bullet.classList.toggle("is-active", i === activeIndex);
+            });
+        });
+
+        // 🔥 GSAP animation function per slide
+        function animateSlide(slideEl) {
+            const tl = gsap.timeline();
+
+            // Animate split text by character (titles)
+            $(slideEl)
+                .find("[data-split]")
+                .each(function () {
+                    if (this._splitInstance) this._splitInstance.revert();
+                    let text = new SplitType(this, { types: "chars" });
+                    this._splitInstance = text;
+
+                    tl.from(
+                        text.chars,
+                        {
+                            yPercent: 100,
+                            stagger: 0.05,
+                            duration: 0.6,
+                            ease: "power2.out",
+                            overwrite: "auto",
+                        },
+                        "-=0.5"
+                    );
+                });
+
+            // Animate split lines (paragraphs or multiline text)
+            $(slideEl)
+                .find("[data-split-lines]")
+                .each(function () {
+                    if (this._splitInstance) this._splitInstance.revert();
+                    let text = new SplitType(this, { types: "lines" });
+                    this._splitInstance = text;
+
+
+                    // Wrap each line to allow clipping
+                    $(text.lines).wrap("<div class='line-wrapper'></div>");
+
+                    tl.from(
+                        text.lines,
+                        {
+                            yPercent: 100,
+                            stagger: 0.1,
+                            duration: 0.8,
+                            ease: "power2.out",
+                            overwrite: "auto",
+                        },
+                        "-=1"
+                    );
+                });
+
+            // Animate background scale-in
+            $(slideEl)
+                .find("[data-scale-bg]")
+                .each(function () {
+                    tl.fromTo(
+                        this,
+                        { scale: 1.7 },
+                        { scale: 1, duration: 2, ease: "power2.out" },
+                        "<"
+                    );
+                });
+        }
     });
-
-    const setInitialActive = () => {
-      bullets.forEach(bullet => bullet.classList.remove("is-active"));
-      if (bullets.length > 0) bullets[0].classList.add("is-active");
-      swiper.slideTo(0, 0);
-    };
-
-    setInitialActive();
-
-    bullets.forEach((bullet, index) => {
-      bullet.dataset.slideIndex = index;
-      bullet.addEventListener("click", function () {
-        const slideIndex = parseInt(this.dataset.slideIndex, 10);
-        swiper.slideTo(slideIndex);
-        bullets.forEach((b) => b.classList.remove("is-active"));
-        this.classList.add("is-active");
-      });
-    });
-
-    swiper.on("slideChange", () => {
-      const activeIndex = swiper.realIndex;
-      bullets.forEach((bullet, i) => {
-        bullet.classList.toggle("is-active", i === activeIndex);
-      });
-    });
-
-    // 🔥 GSAP animation function per slide
-function animateSlide(slideEl) {
-  const tl = gsap.timeline();
-
-  // Animate split text by character (titles)
-  $(slideEl)
-    .find("[data-split]")
-    .each(function () {
-      let text = new SplitType(this, { types: "chars" });
-      tl.from(
-        text.chars,
-        {
-          yPercent: 100,
-          stagger: 0.05,
-          duration: 0.6,
-          ease: "power2.out",
-          overwrite: "auto",
-        },
-        "-=0.5"
-      );
-    });
-
-  // Animate split lines (paragraphs or multiline text)
-  $(slideEl)
-    .find("[data-split-lines]")
-    .each(function () {
-      let text = new SplitType(this, { types: "lines" });
-
-      // Wrap each line to allow clipping
-      $(text.lines).wrap("<div class='line-wrapper'></div>");
-
-      tl.from(
-        text.lines,
-        {
-          yPercent: 100,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: "power2.out",
-          overwrite: "auto",
-        },
-        "-=1"
-      );
-    });
-
-  // Animate background scale-in
-  $(slideEl)
-    .find("[data-scale-bg]")
-    .each(function () {
-      tl.fromTo(
-        this,
-        { scale: 1.7 },
-        { scale: 1, duration: 2, ease: "power2.out" },
-        "<"
-      );
-    });
-}
-  });
-// });
-
-// RunCountup();
 
 };
 
-
+//Model Page Code
+//******************************************* */
 function ModelInit() {
 
     //Map Location Modal
@@ -656,7 +603,8 @@ function ModelInit() {
 
 }
 
-
+//Impact Page Code
+//******************************************* */
 function ImpactInit() {
     // Ripple Effect
     const pulseSets = [
@@ -685,15 +633,6 @@ function ImpactInit() {
         });
     });
 
-    // //Map Location Modal
-    // $(".map-location").on("mouseenter", function (e) {
-    //   let linkName = $(this).attr("location-name");
-    //   $("div.location").text(linkName);
-    // });
-
-    // $('.map-location').on("mouseleave", function (e) {
-    //   $("div.location").text('Hover a Location');
-    // });
 
     //Charts JS
     $(".chart_wrap").each(function () {
@@ -720,7 +659,7 @@ function ImpactInit() {
         let brand3 = $("html").css("--brand-peach");
         let brand4 = $("html").css("--brand-green");
 
-        let chart = new Chart(canvas[0], {
+        new Chart(canvas[0], {
             type: 'line',
             data: {
                 labels: labelsArray,
@@ -845,6 +784,7 @@ function ImpactInit() {
             }
         });
     });
+
     //Charts JS CHART 2
     $(".chart2_wrap").each(function () {
         let canvas = $(this).find("canvas");
@@ -869,7 +809,7 @@ function ImpactInit() {
         let brand3 = $("html").css("--brand-peach");
         let brand4 = $("html").css("--brand-green");
 
-        let chart = new Chart(canvas[0], {
+        new Chart(canvas[0], {
             type: 'bar', // bar, line, pie
             data: {
                 labels: labelsArray,
@@ -1078,28 +1018,14 @@ function ImpactInit() {
             return `rgba(${r},${g},${b},${alpha})`;
         }
     });
-    //Tim's secret
-    // window.addEventListener("DOMContentLoaded", (event) => {
-    //   $("[data-gsap-hide]").css("visibility", "visible");
-    // });
-
-
-  
-
-
+   
 }
 
+
+//Investment Page Code
+//******************************************* */
+
 function InvestmentInit() {
-
-    //Map Location Modal
-    // $(".map-location").on("mouseenter", function (e) {
-    //   let linkName = $(this).attr("location-name");
-    //   $("div.location").text(linkName);
-    // });
-
-    // $('.map-location').on("mouseleave", function (e) {
-    //   $("div.location").text('Hover a Location');
-    // });
 
     //Charts JS
     $(".chart_wrap").each(function () {
@@ -1125,7 +1051,7 @@ function InvestmentInit() {
         let brand3 = $("html").css("--brand-peach");
         let brand4 = $("html").css("--brand-green");
 
-        let chart = new Chart(canvas[0], {
+        new Chart(canvas[0], {
             type: 'line', // bar, line, pie
             data: {
                 labels: labelsArray,
@@ -1241,7 +1167,7 @@ function InvestmentInit() {
         let brand3 = $("html").css("--brand-peach");
         let brand4 = $("html").css("--brand-green");
 
-        let chart = new Chart(canvas[0], {
+        new Chart(canvas[0], {
             type: 'bar', // bar, line, pie
             data: {
                 labels: labelsArray,
@@ -1333,53 +1259,20 @@ function InvestmentInit() {
         });
     });
 
-    //Tim's secret
-    // window.addEventListener("DOMContentLoaded", (event) => {
-    //   $("[data-gsap-hide]").css("visibility", "visible");
-    // });
 
-    // RunCountup();
 }
 
+//People Page Code
+//******************************************* */
+
 function PeopletInit() {
-
-
-    
-
-    // window.addEventListener("DOMContentLoaded", function () {
-    //   let  f2856 = new Funraise({
-    //         id: "b03deba9-831a-46de-9fdc-04a4311e9b56:2856",
-    //         isPopup: true
-    //     });
-    //     f2856.init();
-
-    //     document.querySelector(".btn-animate-chars").addEventListener("click", function (e) {
-    //         e.preventDefault(); // prevents link default behavior
-    //         f2856.open();
-    //     });
-    // });
-
-
-
-    //Tim's secret
-    // window.addEventListener("DOMContentLoaded", (event) => {
-    //   $("[data-gsap-hide]").css("visibility", "visible");
-    // });
-    // //Map Location Modal
-    // $(".map-location").on("mouseenter", function (e) {
-    //   let linkName = $(this).attr("location-name");
-    //   $("div.location").text(linkName);
-    // });
-
-    // $('.map-location').on("mouseleave", function (e) {
-    //   $("div.location").text('Hover a Location');
-    // });
-
 
     setupFunraise();
 }
 
 
+//Shared Code
+//******************************************* */
 
 function RunFirst() {
     //Tim's secret
@@ -1390,7 +1283,7 @@ function RunFirst() {
     // setTimeout(() => {
     //     ScrollTrigger.refresh();
     // }, 1000);
-    ScrollTrigger.refresh();
+    debouncedRefresh();
 
     //Global Font VW  
     function setFullWidthFontSize() {
@@ -1424,9 +1317,9 @@ function RunFirst() {
         if (element.dataset.scriptInitialized) return;
         element.dataset.scriptInitialized = "true";
 
-        const typeSplit = new SplitType(element, {
-            types: "words",
-        });
+        if (element._splitInstance) element._splitInstance.revert();
+        const typeSplit = new SplitType(element, { types: "words" });
+        element._splitInstance = typeSplit;
 
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -1466,44 +1359,7 @@ function RunFirst() {
         });
     });
 
-    //2023 Hero images
-    if (window.location.href.includes("2023")) {
-        // 2023 Report Hero images
-        gsap.from("[hero-img-1]", {
-            yPercent: 120, duration: 1, ease: "expo.out", delay: 0.2
-        });
-        gsap.to("[hero-img-1]", {
-            yPercent: -120, duration: 0.5, ease: "expo.out", delay: 3.2
-        });
-        gsap.from("[hero-img-2]", {
-            yPercent: 120, duration: 1, ease: "expo.out", delay: 0.4
-        });
-        gsap.to("[hero-img-2]", {
-            yPercent: -120, duration: 0.5, ease: "expo.out", delay: 3.4
-        });
-        gsap.from("[hero-img-3]", {
-            yPercent: 120, duration: 1, ease: "expo.out", delay: 0.6
-        });
-        gsap.to("[hero-img-3]", {
-            yPercent: -120, duration: 0.5, ease: "expo.out", delay: 3.6
-        });
-        gsap.from("[hero-img-4]", {
-            yPercent: 120, duration: 1, ease: "expo.out", delay: 3.6, stagger: 0.1
-        });
-        gsap.to("[hero-img-4]", {
-            yPercent: -120, duration: 0.5, ease: "expo.out", delay: 6.6, stagger: 0.1
-        });
-        gsap.from("[hero-img-5]", {
-            yPercent: 120, duration: 1, ease: "expo.out", delay: 7, stagger: 0.1
-        });
-        gsap.from("[hero-img-6]", {
-            yPercent: 120, duration: 1, ease: "expo.out", delay: 6.2, stagger: 0.1
-        });
-        gsap.from("[hero-img-7]", {
-            yPercent: 120, duration: 1, ease: "expo.out", delay: 8, stagger: 0.1
-        });
-
-    }
+    
     //Accordion JS
     if ($('.accordion_1_cms_wrap').length) {
         document.querySelectorAll(".accordion_1_cms_wrap").forEach((cmsWrap, listIndex) => {
@@ -1531,7 +1387,7 @@ function RunFirst() {
                 content.setAttribute("aria-labelledby", button.id);
                 content.style.display = "none";
 
-                const refresh = () => { tl.invalidate(); if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh(); };
+                const refresh = () => { tl.invalidate(); if (typeof ScrollTrigger !== "undefined") debouncedRefresh(); };
                 const tl = gsap.timeline({ paused: true, defaults: { duration: 0.3, ease: "power1.inOut" }, onComplete: refresh, onReverseComplete: refresh });
                 tl.set(content, { display: "block" });
                 tl.fromTo(content, { height: 0 }, { height: "auto" });
@@ -1557,6 +1413,14 @@ function RunFirst() {
 
 
 }
+
+function RunLast() {
+    initModalBasic();
+    FooterCode();
+    animateStandardHero();
+    RebootWebflowFunctions();
+}
+
 
 function initLoaderThreeSteps(heroTl) {
     var tl = gsap.timeline({
@@ -1708,9 +1572,6 @@ function createHeroAnimation() {
 
 
 
-// Split words into individual letters using SplitType
-// let text = new SplitType('[data-split]', { types: 'chars' });
-
 //Button Animation 
 function initButtonCharacterStagger() {
     const offsetIncrement = 0.01; // Transition offset increment in seconds
@@ -1785,29 +1646,12 @@ function initModalBasic() {
     }
 }
 
-// // Initialize Basic Modal
-// document.addEventListener('DOMContentLoaded', () => {
-//   initModalBasic();
-// });
-
-// if ($(".map-location").length) {
-// $(".map-location").on("mouseenter", function (e) {
-//   let linkName = $(this).attr("location-name");
-//   $("div.location").text(linkName);
-// });
-
-// $('.map-location').on("mouseleave", function (e) {
-//   $("div.location").text('Hover a Location');
-// });
-// }
-
-
 
 //Tim's secret  
 /* --- Hero Animation Function --- */
 function animateStandardHero() {
     var heroTl = gsap.timeline();
-    console.log('ANIMATE HERO IS OCCURING')
+    // console.log('ANIMATE HERO IS OCCURING')
     // Hero Image Scale
     $("[data-scale-bg]").each(function () {
         heroTl.fromTo(this,
@@ -1816,6 +1660,8 @@ function animateStandardHero() {
             "<"
         );
     });
+
+
 
     let split; // Declare outside to manage and revert across viewports
 
@@ -1839,12 +1685,15 @@ function animateStandardHero() {
                     },
                     "-=1.5"
                 );
-            } else {
+                
+            } else 
+            {
                 // Mobile: just reset to normal words (no animation needed)
                 split = new SplitType(this, { types: "words" });
                 split.revert(); // Removes all spans, restoring natural wrapping
             }
         });
+        
     }
 
     // Run once on page load
@@ -1863,8 +1712,10 @@ function animateStandardHero() {
     }
 
     // Paragraph Animation
+    let text ;
+
     $("[data-split-lines]").each(function () {
-        let text = new SplitType(this, { types: "lines" });
+         text = new SplitType(this, { types: "lines" });
 
         // Wrap each line in a div to clip it properly
         $(text.lines).wrap("<div class='line-wrapper'></div>");
@@ -1896,6 +1747,7 @@ function FooterCode() {
     });
 }
 
+
 function RebootWebflowFunctions() {
     window.Webflow.destroy();
     window.Webflow.ready();
@@ -1904,110 +1756,122 @@ function RebootWebflowFunctions() {
 
 
 
+
+//Funraise Code - NOT WORKING!
+//*************************/
 let f2856;
 
 // Function to initialize Funraise and set up event listeners
 function setupFunraise() {
-  if (typeof Funraise === "undefined") {
-    console.warn("Funraise not loaded yet");
-    return;
-  }
+    if (typeof Funraise === "undefined") {
+        console.warn("Funraise not loaded yet");
+        return;
+    }
 
-  f2856 = new Funraise({
-    id: "b03deba9-831a-46de-9fdc-04a4311e9b56:2856",
-    isPopup: true
-  });
-
-  f2856.init();
-
-  // Make sure the button exists in the current DOM
-  const btn = document.querySelector(".btn-animate-chars");
-  if (btn) {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      f2856.open();
+    f2856 = new Funraise({
+        id: "b03deba9-831a-46de-9fdc-04a4311e9b56:2856",
+        isPopup: true
     });
-  } else {
-    console.warn("Button .btn-animate-chars not found");
-  }
+
+    f2856.init();
+
+    // Make sure the button exists in the current DOM
+    const btn = document.querySelector(".btn-animate-chars");
+    if (btn) {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            f2856.open();
+        });
+    } else {
+        console.warn("Button .btn-animate-chars not found");
+    }
 }
 
-
-function RunCohorttablesCode()
-{
-
-  //*********************/
+ 
     //cohort tables code
     //*********************/
-   
-// document.addEventListener("DOMContentLoaded", function () {
-	document.querySelectorAll(".tab_1_wrap").forEach((tabWrap, componentIndex) => {
-		if (tabWrap.dataset.scriptInitialized) return;
-		tabWrap.dataset.scriptInitialized = "true";
+function RunCohorttablesCode() {
 
-		const allowLoop = tabWrap.getAttribute("data-allow-loop") === "true",
-			defaultTab = +tabWrap.getAttribute("data-default-tab") || 0,
-			buttonList = tabWrap.querySelector(".tab_1_button_list"),
-			buttonItems = tabWrap.querySelectorAll(".tab_1_button_item"),
-			panelList = tabWrap.querySelector(".tab_1_content_list"),
-			panelItems = tabWrap.querySelectorAll(".tab_1_content_item"),
-			previousButton = tabWrap.querySelector(".tab_1_control_button.is-previous"),
-			nextButton = tabWrap.querySelector(".tab_1_control_button.is-next");
+    // document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".tab_1_wrap").forEach((tabWrap, componentIndex) => {
+        if (tabWrap.dataset.scriptInitialized) return;
+        tabWrap.dataset.scriptInitialized = "true";
 
-		if (!buttonList || !panelList || !buttonItems.length || !panelItems.length) {
-			console.warn("Missing elements in:", tabWrap);
-			return;
-		}
+        const allowLoop = tabWrap.getAttribute("data-allow-loop") === "true",
+            defaultTab = +tabWrap.getAttribute("data-default-tab") || 0,
+            buttonList = tabWrap.querySelector(".tab_1_button_list"),
+            buttonItems = tabWrap.querySelectorAll(".tab_1_button_item"),
+            panelList = tabWrap.querySelector(".tab_1_content_list"),
+            panelItems = tabWrap.querySelectorAll(".tab_1_content_item"),
+            previousButton = tabWrap.querySelector(".tab_1_control_button.is-previous"),
+            nextButton = tabWrap.querySelector(".tab_1_control_button.is-next");
 
-		panelList.removeAttribute("role");
-		buttonList.setAttribute("role", "tablist");
-		buttonItems.forEach((btn) => btn.setAttribute("role", "tab"));
-		panelItems.forEach((panel) => panel.setAttribute("role", "tabpanel"));
+        if (!buttonList || !panelList || !buttonItems.length || !panelItems.length) {
+            console.warn("Missing elements in:", tabWrap);
+            return;
+        }
 
-		let activeIndex = defaultTab;
-		const makeActive = (index, focus = true) => {
-			activeIndex = index;
-			buttonItems.forEach((btn, i) => {
-				btn.classList.toggle("is-active", i === index);
-				btn.setAttribute("aria-selected", i === index ? "true" : "false");
-				btn.setAttribute("tabindex", i === index ? "0" : "-1");
-			});
-			panelItems.forEach((panel, i) => panel.classList.toggle("is-active", i === index));
-			if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
-			if (nextButton) nextButton.disabled = index === buttonItems.length - 1 && !allowLoop;
-			if (previousButton) previousButton.disabled = index === 0 && !allowLoop;
-			if (focus) buttonItems[index].focus();
-		};
+        panelList.removeAttribute("role");
+        buttonList.setAttribute("role", "tablist");
+        buttonItems.forEach((btn) => btn.setAttribute("role", "tab"));
+        panelItems.forEach((panel) => panel.setAttribute("role", "tabpanel"));
 
-		makeActive(defaultTab, false);
+        let activeIndex = defaultTab;
+        const makeActive = (index, focus = true) => {
+            activeIndex = index;
+            buttonItems.forEach((btn, i) => {
+                btn.classList.toggle("is-active", i === index);
+                btn.setAttribute("aria-selected", i === index ? "true" : "false");
+                btn.setAttribute("tabindex", i === index ? "0" : "-1");
+            });
+            panelItems.forEach((panel, i) => panel.classList.toggle("is-active", i === index));
+            if (typeof ScrollTrigger !== "undefined")debouncedRefresh();
+            if (nextButton) nextButton.disabled = index === buttonItems.length - 1 && !allowLoop;
+            if (previousButton) previousButton.disabled = index === 0 && !allowLoop;
+            if (focus) buttonItems[index].focus();
+        };
 
-		const updateIndex = (delta) => makeActive((activeIndex + delta + buttonItems.length) % buttonItems.length);
-		nextButton?.addEventListener("click", () => updateIndex(1));
-		previousButton?.addEventListener("click", () => updateIndex(-1));
+        makeActive(defaultTab, false);
 
-		buttonItems.forEach((btn, index) => {
-			btn.setAttribute("id", "tab_1_button_" + componentIndex + "_" + index);
-			btn.setAttribute("aria-controls", "tab_1_panel_" + componentIndex + "_" + index);
-			panelItems[index].setAttribute("id", "tab_1_panel_" + componentIndex + "_" + index);
-			panelItems[index].setAttribute("aria-labelledby", btn.id);
-			btn.addEventListener("click", () => makeActive(index));
-			btn.addEventListener("keydown", (e) => {
-				if (["ArrowRight", "ArrowDown"].includes(e.key)) updateIndex(1);
-				else if (["ArrowLeft", "ArrowUp"].includes(e.key)) updateIndex(-1);
-			});
-		});
-	});
-// });
+        const updateIndex = (delta) => makeActive((activeIndex + delta + buttonItems.length) % buttonItems.length);
+        nextButton?.addEventListener("click", () => updateIndex(1));
+        previousButton?.addEventListener("click", () => updateIndex(-1));
+
+        buttonItems.forEach((btn, index) => {
+            btn.setAttribute("id", "tab_1_button_" + componentIndex + "_" + index);
+            btn.setAttribute("aria-controls", "tab_1_panel_" + componentIndex + "_" + index);
+            panelItems[index].setAttribute("id", "tab_1_panel_" + componentIndex + "_" + index);
+            panelItems[index].setAttribute("aria-labelledby", btn.id);
+            btn.addEventListener("click", () => makeActive(index));
+            btn.addEventListener("keydown", (e) => {
+                if (["ArrowRight", "ArrowDown"].includes(e.key)) updateIndex(1);
+                else if (["ArrowLeft", "ArrowUp"].includes(e.key)) updateIndex(-1);
+            });
+        });
+    });
+    // });
 }
 
-
-function RunCountup()
-{
+//Barba breaks the natural page flow, so Countup must be loaded manually each time 
+function RunCountup() {
     const existingScript = document.querySelector('script[src*="https://cdn.jsdelivr.net/npm/@flowbase-co/boosters-countup@1.0.0/dist/countup.min.js"]');
     if (existingScript) {
-      const newScript = document.createElement('script');
-      newScript.src = existingScript.src;
-      newScript.async = true;
-      document.body.appendChild(newScript);
-    }    
+        const newScript = document.createElement('script');
+        newScript.src = existingScript.src;
+        newScript.async = true;
+        document.body.appendChild(newScript);
+    }
 }
+
+
+
+//prevents ScrollTrigger.refresh() running too many times slowing down performance
+function debounce(func, delay) {
+    let timer;
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(func, delay);
+    };
+  }
+  
+  const debouncedRefresh = debounce(() => ScrollTrigger.refresh(), 250);
