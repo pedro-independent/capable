@@ -1,6 +1,3 @@
-
-
-
 // Old Code //
 
 // function resetWebflow(data) {
@@ -50,17 +47,19 @@ barba.hooks.enter((data) => {
         top: 0,
         left: 0,
         width: "100%",
-        x: "100vh"  // Start next page off-screen to the right
+        y: "100vh",
+        zIndex: 90
     });
 });
 
 barba.hooks.after((data) => {
-    gsap.set(data.next.container, { position: "relative" });
+    gsap.set(data.next.container, { position: "relative", clearProps:'all' });
     $(window).scrollTop(0);
     // resetWebflow(data);
 
     // 🔹 Trigger Hero Animation on New Page
     // animateHero();
+
     RunCohorttablesCode();
     RunCountup();
 
@@ -156,13 +155,13 @@ barba.init({
         {
             sync: true,
             enter(data) {
-                let tl = gsap.timeline({ defaults: { duration: 1, ease: "power2.out" } });
+                let tl = gsap.timeline({ defaults: { duration: 1.25, ease: "power3.out" } });
 
-                // Move the current page to the left while fading out
-                tl.to(data.current.container, { x: "-100vw", opacity: 0.5 });
+                // Move the current page up while fading out
+                //tl.to(data.current.container, { y: "-100vw", opacity: 0.5 });
 
-                // Slide the new page in from the right
-                tl.to(data.next.container, { x: "0vw" }, "<");
+                // Slide the new page in from the bottom
+                tl.to(data.next.container, { y: "0vw" }, "<");
 
                 return tl;
             }
@@ -1660,8 +1659,6 @@ function animateStandardHero() {
             "<"
         );
     });
-
-
 
     let split; // Declare outside to manage and revert across viewports
 
