@@ -290,7 +290,7 @@ function homeInit() {
   }
 
   //FAB Scrolling Sections
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, Flip);
 
   [
     { section: "#our-model", fab: ".fab_wrap.is-01" },
@@ -635,6 +635,158 @@ function ImpactInit() {
       );
     });
   });
+
+  // Flip Animation
+/*   
+  function initFlipOnScroll() {
+    const wrapperElements = document.querySelectorAll("[data-flip-element='wrapper']");
+    const targetEl = document.querySelector("[data-flip-element='target']");
+  
+    wrapperElements.forEach((element, index) => {
+      const next = wrapperElements[index + 1];
+      if (!next) return;
+  
+      ScrollTrigger.create({
+        trigger: next,
+        start: "top bottom",
+        once: true,
+        onEnter: () => {
+          const state = Flip.getState(targetEl);
+          next.appendChild(targetEl); // Move element into new wrapper
+  
+          // ✅ Pre-split and hide all headings in this wrapper
+          const headings = next.querySelectorAll("[data-split-lines]");
+          const splits = [];
+  
+          headings.forEach((heading) => {
+            const split = new SplitType(heading, { types: "lines" });
+            split.lines.forEach(line => {
+              const wrapperDiv = document.createElement("div");
+              wrapperDiv.classList.add("line-wrapper");
+              line.parentNode.insertBefore(wrapperDiv, line);
+              wrapperDiv.appendChild(line);
+            });
+  
+            // ✅ Immediately hide lines
+            gsap.set(split.lines, { yPercent: 100 });
+            splits.push(split);
+          });
+  
+          // 👉 Run Flip
+          Flip.from(state, {
+            duration: 1.2,
+            ease: "power2.inOut",
+            onComplete: () => {
+              splits.forEach(split => {
+                gsap.to(split.lines, {
+                  yPercent: 0,
+                  stagger: 0.1,
+                  duration: 0.8,
+                  ease: "power2.out"
+                });
+              });
+            }
+          });
+        }
+      });
+    });
+  }
+  
+  initFlipOnScroll(); */
+
+  function initFlipOnScroll() {
+    let wrapperElements = document.querySelectorAll("[data-flip-element='wrapper']");
+    let targetEl = document.querySelector("[data-flip-element='target']");
+  
+    let tl;
+  
+    function flipTimeline() {
+      if (tl) {
+        tl.kill();
+        gsap.set(targetEl, { clearProps: "all" });
+      }
+  
+      tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapperElements[0],
+          start: "center center",
+          endTrigger: wrapperElements[wrapperElements.length - 1],
+          end: "center center",
+          scrub: 0.25
+        }
+      });
+  
+      wrapperElements.forEach(function (element, index) {
+        let nextIndex = index + 1;
+        if (nextIndex < wrapperElements.length) {
+          let nextWrapperEl = wrapperElements[nextIndex];
+  
+          let nextRect = nextWrapperEl.getBoundingClientRect();
+          let thisRect = element.getBoundingClientRect();
+  
+          let nextDistance = nextRect.top + window.pageYOffset + nextWrapperEl.offsetHeight / 2;
+          let thisDistance = thisRect.top + window.pageYOffset + element.offsetHeight / 2;
+          let offset = nextDistance - thisDistance;
+  
+          tl.add(
+            Flip.fit(targetEl, nextWrapperEl, {
+              duration: offset,
+              ease: "none"
+            })
+          );
+        }
+      });
+    }
+  
+    flipTimeline();
+  
+    let resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        flipTimeline();
+      }, 100);
+    });
+  
+    // ✨ TEXT REVEAL ON FLIP LAND
+    document.querySelectorAll("[data-flip-element='wrapper']").forEach(wrapper => {
+      const heading = wrapper.querySelector("[data-split-lines]");
+      if (!heading) return;
+  
+      const split = new SplitType(heading, { types: "lines" });
+  
+      split.lines.forEach(line => {
+        const wrapperDiv = document.createElement("div");
+        wrapperDiv.classList.add("line-wrapper");
+        line.parentNode.insertBefore(wrapperDiv, line);
+        wrapperDiv.appendChild(line);
+      });
+  
+      gsap.set(split.lines, { yPercent: 100 });
+  
+      ScrollTrigger.create({
+        trigger: wrapper,
+        start: "center center",
+        once: true,
+        onEnter: () => {
+          gsap.to(split.lines, {
+            yPercent: 0,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "power2.out"
+          });
+        }
+      });
+    });
+  }
+  
+  // ✅ Initialize it
+  initFlipOnScroll();
+  
+  
+  
+  
+
 
   //Charts JS
   // $(".chart_wrap").each(function () {
